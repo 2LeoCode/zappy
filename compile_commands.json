@@ -5,17 +5,18 @@
       "-Wall",
       "-Werror",
       "-Wextra",
-      "-pedantic",
+      "-Wpedantic",
       "-std=c++20",
       "-Iinc",
+      "-I../../libs/world/inc",
       "-c",
       "-o",
-      "out/build/main.o",
+      ".obj/main.o",
       "src/main.cxx"
     ],
     "directory": "/home/lsuardi/Projects/zappy/programs/client",
     "file": "/home/lsuardi/Projects/zappy/programs/client/src/main.cxx",
-    "output": "/home/lsuardi/Projects/zappy/programs/client/out/build/main.o"
+    "output": "/home/lsuardi/Projects/zappy/programs/client/.obj/main.o"
   },
   {
     "arguments": [
@@ -23,17 +24,18 @@
       "-Wall",
       "-Werror",
       "-Wextra",
-      "-pedantic",
+      "-Wpedantic",
       "-std=c++20",
+      "-fPIC",
       "-Iinc",
       "-c",
       "-o",
-      "../../out/build/server/main.o",
-      "src/main.cxx"
+      ".obj/world.o",
+      "src/world.cxx"
     ],
-    "directory": "/home/lsuardi/Projects/zappy/programs/server",
-    "file": "/home/lsuardi/Projects/zappy/programs/server/src/main.cxx",
-    "output": "/home/lsuardi/Projects/zappy/out/build/server/main.o"
+    "directory": "/home/lsuardi/Projects/zappy/libs/world",
+    "file": "/home/lsuardi/Projects/zappy/libs/world/src/world.cxx",
+    "output": "/home/lsuardi/Projects/zappy/libs/world/.obj/world.o"
   },
   {
     "arguments": [
@@ -41,16 +43,36 @@
       "-Wall",
       "-Werror",
       "-Wextra",
-      "-pedantic",
+      "-Wpedantic",
       "-std=c++20",
       "-Iinc",
+      "-I../../libs/world/inc",
       "-c",
       "-o",
-      "../../out/build/gfx/main.o",
+      ".obj/main.o",
       "src/main.cxx"
     ],
     "directory": "/home/lsuardi/Projects/zappy/programs/gfx",
     "file": "/home/lsuardi/Projects/zappy/programs/gfx/src/main.cxx",
-    "output": "/home/lsuardi/Projects/zappy/out/build/gfx/main.o"
+    "output": "/home/lsuardi/Projects/zappy/programs/gfx/.obj/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-Wall",
+      "-Werror",
+      "-Wextra",
+      "-Wpedantic",
+      "-std=c++20",
+      "-Iinc",
+      "-I../../libs/world/inc",
+      "-c",
+      "-o",
+      ".obj/main.o",
+      "src/main.cxx"
+    ],
+    "directory": "/home/lsuardi/Projects/zappy/programs/server",
+    "file": "/home/lsuardi/Projects/zappy/programs/server/src/main.cxx",
+    "output": "/home/lsuardi/Projects/zappy/programs/server/.obj/main.o"
   }
 ]

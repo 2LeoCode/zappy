@@ -1,23 +1,34 @@
 SHELL=bash
 RM=rm -rf
 
-all: client server gfx
+PROGRAMS_DIR=programs
+LIBS_DIR=libs
 
-client:
-	$(MAKE) -C programs/client BUILD_DIR=../../out/build/client OUT_DIR=../../out
+PROGRAM_NAMES=client gfx server
+PROGRAMS=$(foreach name, $(PROGRAM_NAMES), $(PROGRAMS_DIR)/$(name)/$(name))
 
-server:
-	$(MAKE) -C programs/server BUILD_DIR=../../out/build/server OUT_DIR=../../out
+LIB_NAMES=world
+LIBS=$(foreach name, $(LIB_NAMES), $(LIBS_DIR)/$(name)/lib$(name).so)
 
-gfx:
-	$(MAKE) -C programs/gfx BUILD_DIR=../../out/build/gfx OUT_DIR=../../out
+all: $(PROGRAMS)
 
-clean:
-	$(RM) out/build
+$(PROGRAM_NAMES): $(PROGRAMS)
 
-fclean:
-	$(RM) out
+$(PROGRAMS):
+	$(MAKE) -C $(dir $@)
+
+$(PROGRAM_NAMES:%=start-%): start-%: %
+	./$(PROGRAMS_DIR)/$</$< $(ARGS)
+
+$(PROGRAM_NAMES:%=clean-%): clean-%:
+	$(MAKE) -C $(@:clean-%=$(PROGRAMS_DIR)/%) fclean
+
+$(PROGRAM_NAMES:%=fclean-%): fclean-%:
+	$(MAKE) -C $(@:clean-%=$(PROGRAMS_DIR)/%) fclean
+
+clean fclean:
+	$(foreach bin, $(PROGRAMS) $(LIBS), $(MAKE) -C $(dir $(bin)) $@;)
 
 re: fclean all
 
-.PHONY: all client server gfx clean fclean re
+.PHONY: all clean fclean re $(foreach prog, $(PROGRAM_NAMES), $(prog) start-$(prog) clean-$(prog) fclean-$(prog))

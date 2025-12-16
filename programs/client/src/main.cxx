@@ -1,6 +1,8 @@
-#include <cstdio>
+#include <world.hxx>
 
 int main(void) {
-  puts("Hello world!");
+  world::World world;
+
+  world.hello();
   return 0;
 }

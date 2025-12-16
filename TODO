@@ -1,0 +1,22 @@
+SERVER
+- CLI parsing
+- TCP server - Zappy server protocol - GFX server protocol
+- Map generation
+- Simulation loop
+
+
+CLIENT
+- CLI parsing
+- TCP client - Zappy client protocol
+- AI loop
+
+
+GFX
+- TCP client - GFX client protocol
+- Graphical interface: for now, terminal based for simplicity
+
+
+COMMON
+- zappy common API ?
+- gfx common API ?
+- classes for game objects

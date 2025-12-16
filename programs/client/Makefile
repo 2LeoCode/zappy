@@ -2,38 +2,46 @@ SHELL=bash
 RM=rm -rf
 MKDIR=mkdir -p
 
-CXX=clang++
-CXXFLAGS=-Wall -Werror -Wextra -pedantic -std=c++20 -Iinc
-LDFLAGS=
+NAME=client
+LIB_NAMES=world
 
-OUT_DIR=out
-BUILD_DIR=$(OUT_DIR)/build
+LIBS_ROOT=../../libs
 SRC_DIR=src
 INC_DIR=inc
+OBJ_DIR=.obj
+LIB_DIRS=$(LIB_NAMES:%=$(LIBS_ROOT)/%)
 
-SRC=$(shell find src -type f -name "*.cxx")
-OBJ=$(SRC:$(SRC_DIR)/%.cxx=$(BUILD_DIR)/%.o)
+LIB=$(foreach name, $(LIB_NAMES), $(LIBS_ROOT)/$(name)/lib$(name).so)
+SRC=$(shell find $(SRC_DIR) -type f -name "*.cxx")
+OBJ=$(SRC:$(SRC_DIR)/%.cxx=$(OBJ_DIR)/%.o)
 DEP=$(OBJ:.o=.d)
 
-NAME=$(OUT_DIR)/client
+CXX=clang++
+CXXFLAGS=-Wall -Werror -Wextra -Wpedantic -std=c++20 -MMD -I$(INC_DIR) $(LIB_DIRS:%=-I%/$(INC_DIR))
+LDFLAGS=$(LIB_DIRS:%=-L%) $(LIB_NAMES:%=-l%) -Wl,-rpath,'$(LIB_DIRS:%=$$ORIGIN/%:)'
+
 
 all: $(NAME)
 
 -include $(DEP)
 
-$(NAME): $(OBJ)
-	$(MKDIR) $(dir $@)
-	$(CXX) $^ -o $@ $(LDFLAGS)
+$(LIB):
+	$(MAKE) -C $(dir $@) INC_DIR=$(INC_DIR)
 
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cxx
-	$(MKDIR) $(dir $@)
+$(NAME): $(OBJ) $(LIB)
+	$(CXX) $(OBJ) -o $@ $(LDFLAGS)
+
+$(OBJ): $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cxx $(OBJ_DIR) 
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-clean:
-	$(RM) $(BUILD_DIR)
+$(OBJ_DIR):
+	$(MKDIR) $@
 
-fclean:
-	$(RM) $(OUT_DIR)
+clean:
+	$(RM) $(OBJ_DIR)
+
+fclean: clean
+	$(RM) $(NAME)
 
 re: fclean all
 
