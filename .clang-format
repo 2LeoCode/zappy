@@ -1,0 +1,14 @@
+BasedOnStyle: LLVM
+IndentWidth: 2
+UseTab: Never
+
+Language: Cpp
+
+DerivePointerAlignment: false
+PointerAlignment: Middle
+BinPackParameters: false
+BinPackArguments: false
+AlignAfterOpenBracket: BlockIndent
+IndentPPDirectives: AfterHash
+IndentCaseLabels: true
+PPIndentWidth: 1

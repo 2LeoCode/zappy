@@ -3,3 +3,4 @@
 programs/client/client
 programs/server/server
 programs/gfx/gfx
+.cache/
