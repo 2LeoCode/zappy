@@ -12,3 +12,16 @@ AlignAfterOpenBracket: BlockIndent
 IndentPPDirectives: AfterHash
 IndentCaseLabels: true
 PPIndentWidth: 1
+QualifierAlignment: Custom
+QualifierOrder: [static, constexpr, inline, friend, type, const, volatile, restrict]
+SortIncludes: true
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex:           '^<[a-z_/]+>$'
+    Priority:        1
+  - Regex:           '^<[a-z_/]+\.h>$'
+    Priority:        2
+  - Regex:           '^<.*\.hxx>$'
+    Priority:        3
+  - Regex:           '".*"'
+    Priority:        4
