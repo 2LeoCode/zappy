@@ -74,5 +74,138 @@
     "directory": "/home/lsuardi/Projects/zappy/programs/server",
     "file": "/home/lsuardi/Projects/zappy/programs/server/src/main.cxx",
     "output": "/home/lsuardi/Projects/zappy/programs/server/.obj/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-Wall",
+      "-Werror",
+      "-Wextra",
+      "-Wpedantic",
+      "-std=c++20",
+      "-Iinc",
+      "-I../../libs/world/inc",
+      "-c",
+      "-o",
+      ".obj/tcp-server/operators.o",
+      "src/tcp-server/operators.cxx"
+    ],
+    "directory": "/home/lsuardi/Projects/zappy/programs/server",
+    "file": "/home/lsuardi/Projects/zappy/programs/server/src/tcp-server/operators.cxx",
+    "output": "/home/lsuardi/Projects/zappy/programs/server/.obj/tcp-server/operators.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-Wall",
+      "-Werror",
+      "-Wextra",
+      "-Wpedantic",
+      "-std=c++20",
+      "-Iinc",
+      "-I../../libs/world/inc",
+      "-c",
+      "-o",
+      ".obj/tcp-server/listen.o",
+      "src/tcp-server/listen.cxx"
+    ],
+    "directory": "/home/lsuardi/Projects/zappy/programs/server",
+    "file": "/home/lsuardi/Projects/zappy/programs/server/src/tcp-server/listen.cxx",
+    "output": "/home/lsuardi/Projects/zappy/programs/server/.obj/tcp-server/listen.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-Wall",
+      "-Werror",
+      "-Wextra",
+      "-Wpedantic",
+      "-std=c++20",
+      "-Iinc",
+      "-I../../libs/world/inc",
+      "-c",
+      "-o",
+      ".obj/tcp-server/client/client.o",
+      "src/tcp-server/client/client.cxx"
+    ],
+    "directory": "/home/lsuardi/Projects/zappy/programs/server",
+    "file": "/home/lsuardi/Projects/zappy/programs/server/src/tcp-server/client/client.cxx",
+    "output": "/home/lsuardi/Projects/zappy/programs/server/.obj/tcp-server/client/client.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-Wall",
+      "-Werror",
+      "-Wextra",
+      "-Wpedantic",
+      "-std=c++20",
+      "-Iinc",
+      "-I../../libs/world/inc",
+      "-c",
+      "-o",
+      ".obj/tcp-server/client/accessors.o",
+      "src/tcp-server/client/accessors.cxx"
+    ],
+    "directory": "/home/lsuardi/Projects/zappy/programs/server",
+    "file": "/home/lsuardi/Projects/zappy/programs/server/src/tcp-server/client/accessors.cxx",
+    "output": "/home/lsuardi/Projects/zappy/programs/server/.obj/tcp-server/client/accessors.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-Wall",
+      "-Werror",
+      "-Wextra",
+      "-Wpedantic",
+      "-std=c++20",
+      "-Iinc",
+      "-I../../libs/world/inc",
+      "-c",
+      "-o",
+      ".obj/tcp-server/accessors.o",
+      "src/tcp-server/accessors.cxx"
+    ],
+    "directory": "/home/lsuardi/Projects/zappy/programs/server",
+    "file": "/home/lsuardi/Projects/zappy/programs/server/src/tcp-server/accessors.cxx",
+    "output": "/home/lsuardi/Projects/zappy/programs/server/.obj/tcp-server/accessors.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-Wall",
+      "-Werror",
+      "-Wextra",
+      "-Wpedantic",
+      "-std=c++20",
+      "-Iinc",
+      "-I../../libs/world/inc",
+      "-c",
+      "-o",
+      ".obj/tcp-server/tcp-server.o",
+      "src/tcp-server/tcp-server.cxx"
+    ],
+    "directory": "/home/lsuardi/Projects/zappy/programs/server",
+    "file": "/home/lsuardi/Projects/zappy/programs/server/src/tcp-server/tcp-server.cxx",
+    "output": "/home/lsuardi/Projects/zappy/programs/server/.obj/tcp-server/tcp-server.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-Wall",
+      "-Werror",
+      "-Wextra",
+      "-Wpedantic",
+      "-std=c++20",
+      "-Iinc",
+      "-I../../libs/world/inc",
+      "-c",
+      "-o",
+      ".obj/tcp-server/create.o",
+      "src/tcp-server/create.cxx"
+    ],
+    "directory": "/home/lsuardi/Projects/zappy/programs/server",
+    "file": "/home/lsuardi/Projects/zappy/programs/server/src/tcp-server/create.cxx",
+    "output": "/home/lsuardi/Projects/zappy/programs/server/.obj/tcp-server/create.o"
   }
 ]

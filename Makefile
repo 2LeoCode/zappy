@@ -10,6 +10,7 @@ PROGRAMS=$(foreach name, $(PROGRAM_NAMES), $(PROGRAMS_DIR)/$(name)/$(name))
 LIB_NAMES=world
 LIBS=$(foreach name, $(LIB_NAMES), $(LIBS_DIR)/$(name)/lib$(name).so)
 
+
 all: $(PROGRAMS)
 
 $(PROGRAM_NAMES): $(PROGRAMS)
