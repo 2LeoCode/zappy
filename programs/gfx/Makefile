@@ -11,7 +11,7 @@ INC_DIR=inc
 OBJ_DIR=.obj
 LIB_DIRS=$(LIB_NAMES:%=$(LIBS_ROOT)/%)
 
-LIB=$(foreach name, $(LIB_NAMES), $(LIBS_ROOT)/$(name)/lib$(name).so)
+LIB=$(foreach name,$(LIB_NAMES), $(LIBS_ROOT)/$(name)/lib$(name).so)
 SRC=$(shell find $(SRC_DIR) -type f -name "*.cxx")
 OBJ=$(SRC:$(SRC_DIR)/%.cxx=$(OBJ_DIR)/%.o)
 DEP=$(OBJ:.o=.d)
@@ -20,7 +20,7 @@ OBJ_DIRS=$(sort $(dir $(OBJ)))
 
 CXX=clang++
 CXXFLAGS=-Wall -Werror -Wextra -Wpedantic -std=c++20 -MMD -I$(INC_DIR) $(LIB_DIRS:%=-I%/$(INC_DIR))
-LDFLAGS=$(LIB_DIRS:%=-L%) $(LIB_NAMES:%=-l%) -Wl,-rpath,'$(LIB_DIRS:%=$$ORIGIN/%:)'
+LDFLAGS=$(LIB_DIRS:%=-L%) $(LIB_NAMES:%=-l%) -Wl,-rpath,'$(shell printf '$(LIB_DIRS:%=$$ORIGIN/%:)' | tr -d ' ')'
 
 
 all: $(NAME)

@@ -1,15 +1,15 @@
+#include <cstddef>
+#include <cstdint>
 #include <system_error>
 
 #include <netinet/in.h>
 #include <sys/socket.h>
 
-#include <tcp-server.hxx>
-#include <tcp-server/client.hxx>
+#include <tcp/server.hxx>
 
-namespace net {
+namespace tcp::server {
 
-TcpServer
-TcpServer::create(std::uint16_t const port, std::size_t const maxConn) {
+Server Server::create(std::uint16_t const port, std::size_t const maxConn) {
   int const sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
   if (sockfd == -1) {
@@ -32,7 +32,7 @@ TcpServer::create(std::uint16_t const port, std::size_t const maxConn) {
     throw std::system_error();
   }
 
-  return TcpServer(sockfd, addr, maxConn);
+  return Server(sockfd, addr, maxConn);
 }
 
-} // namespace net
+} // namespace tcp::server

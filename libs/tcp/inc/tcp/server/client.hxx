@@ -1,18 +1,17 @@
-#ifndef TCP_SERVER_CLIENT_HXX
-#define TCP_SERVER_CLIENT_HXX
-
+#include <exception>
+#include <string_view>
+#include <system_error>
 #include <vector>
 
-#include <netinet/in.h>
-#include <sys/epoll.h>
+#include <utils/result.hxx>
 
-#include <tcp-server.hxx>
+#include "server.hxx"
 
-namespace net {
+namespace tcp::server {
 
-class TcpServer::Client {
+class Server::Client {
 public:
-  friend class TcpServer;
+  friend class Server;
 
   Client() = delete;
   Client(Client const &) = delete;
@@ -21,6 +20,10 @@ public:
   Client & operator=(Client const &) = delete;
 
   sockaddr_in addr() const noexcept;
+
+  void queueMessage(std::string_view const & msg) noexcept;
+
+  utils::Result<std::string, std::system_error> unqueueResponse() noexcept;
 
 private:
   Client(sockaddr_in addr) noexcept;
@@ -33,6 +36,4 @@ private:
 protected:
 };
 
-} // namespace net
-
-#endif
+} // namespace tcp::server

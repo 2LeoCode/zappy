@@ -5,14 +5,13 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include <tcp-server.hxx>
-#include <tcp-server/client.hxx>
+#include <tcp/server.hxx>
 
 constexpr std::size_t MAX_EVENTS = 32;
 constexpr std::size_t BUF_SIZE = 4096;
 
-namespace net {
-void TcpServer::listen() {
+namespace tcp::server {
+void Server::listen() {
   if (::listen(_socket, SOMAXCONN) == -1) {
     throw std::system_error();
   }
@@ -125,4 +124,4 @@ void TcpServer::listen() {
   }
 }
 
-} // namespace net
+} // namespace tcp::server
