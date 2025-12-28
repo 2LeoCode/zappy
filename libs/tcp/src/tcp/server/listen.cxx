@@ -1,3 +1,4 @@
+#include <cerrno>
 #include <system_error>
 
 #include <sys/epoll.h>
@@ -39,7 +40,6 @@ void Server::listen() {
     int const nfds = epoll_wait(pfd, ev, MAX_EVENTS, -1);
 
     if (nfds == -1) {
-      // TODO: handle error more gracefully
       throw std::system_error();
     }
 
@@ -54,7 +54,11 @@ void Server::listen() {
         );
 
         if (clientSocket == -1) {
-          continue;
+          if (errno == EMFILE || errno == ENFILE || errno == EPROTO ||
+              errno == ECONNABORTED) {
+            continue;
+          }
+          throw std::system_error();
         }
 
         if (_clients.size() == _maxConn) {
@@ -71,7 +75,7 @@ void Server::listen() {
 
         if (epoll_ctl(pfd, EPOLL_CTL_ADD, clientSocket, &clientEv) == -1) {
           close(clientSocket);
-          continue;
+          throw std::system_error();
         }
 
         _clients.emplace(clientSocket, Client(clientAddr));
@@ -83,10 +87,19 @@ void Server::listen() {
           do {
             bytesRead = recv(fd, buffer, BUF_SIZE, 0);
             if (bytesRead == -1) {
-              _clients.erase(fd);
+              int const readErr = errno;
 
-              epoll_ctl(pfd, EPOLL_CTL_DEL, fd, nullptr);
+              if (epoll_ctl(pfd, EPOLL_CTL_DEL, fd, nullptr))
+                throw std::system_error();
+
+              _clients.erase(fd);
               close(fd);
+
+              if (readErr == ECONNRESET || readErr == EPIPE || readErr == EIO ||
+                  readErr == ENETDOWN) {
+                continue;
+              }
+              throw std::system_error();
             } else {
               auto & client = _clients.at(fd);
 
@@ -107,10 +120,20 @@ void Server::listen() {
             );
 
             if (bytesWrote == -1) {
-              _clients.erase(fd);
+              int const writeErr = errno;
 
-              epoll_ctl(pfd, EPOLL_CTL_DEL, fd, nullptr);
+              if (epoll_ctl(pfd, EPOLL_CTL_DEL, fd, nullptr) == -1) {
+                throw std::system_error();
+              }
+
+              _clients.erase(fd);
               close(fd);
+
+              if (writeErr == ECONNRESET || writeErr == EPIPE ||
+                  writeErr == EIO || writeErr == ENETDOWN) {
+                continue;
+              }
+              throw std::system_error();
             } else {
               client._outputBuffer.erase(
                   client._outputBuffer.begin(),

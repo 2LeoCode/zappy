@@ -17,13 +17,11 @@ public:
   Client(Client const &) = delete;
   Client(Client && other) = default;
 
-  Client & operator=(Client const &) = delete;
-
   sockaddr_in addr() const noexcept;
 
   void queueMessage(std::string_view const & msg) noexcept;
 
-  utils::Result<std::string, std::system_error> unqueueResponse() noexcept;
+  std::string unqueueResponse() noexcept;
 
 private:
   Client(sockaddr_in addr) noexcept;

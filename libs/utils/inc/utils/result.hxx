@@ -7,19 +7,19 @@
 
 namespace utils {
 
-template <class Ok, class Ko> class BaseResult : private std::variant<Ok, Ko> {
-
-public:
+template <class Ok, class Ko> struct BaseResult : private std::variant<Ok, Ko> {
   explicit BaseResult(Ok const & okVal) noexcept
       : std::variant<Ok, Ko>::variant(okVal) {}
   explicit BaseResult(Ko const & koVal) noexcept
       : std::variant<Ok, Ko>::variant(koVal) {}
 
-  bool isOk() { return std::holds_alternative<Ok>(*this); }
+  bool isOk() const noexcept { return std::holds_alternative<Ok>(*this); }
+
+  bool isKo() const noexcept { return std::holds_alternative<Ko>(*this); }
 
   template <class NewOk>
   BaseResult<NewOk, Ko>
-  andThen(BaseResult<NewOk, Ko> const & other) const noexcept {
+  okAnd(BaseResult<NewOk, Ko> const & other) const noexcept {
     if (auto const * const koVal = std::get_if<Ko>(*this)) {
       return makeResult(*koVal);
     }
@@ -27,7 +27,7 @@ public:
   }
 
   template <class NewOk, std::invocable<Ok const &, BaseResult<NewOk, Ko>> Fn>
-  BaseResult<NewOk, Ko> andThen(Fn const & fn) const noexcept {
+  BaseResult<NewOk, Ko> okAnd(Fn const & fn) const noexcept {
     if (auto const * const okVal = std::get_if<Ok>(*this)) {
       return fn(*okVal);
     }
@@ -36,7 +36,7 @@ public:
 
   template <class NewKo>
   BaseResult<Ok, NewKo>
-  orElse(BaseResult<Ok, NewKo> const & other) const noexcept {
+  koAnd(BaseResult<Ok, NewKo> const & other) const noexcept {
     if (auto const * const okVal = std::get_if<Ok>(*this)) {
       return makeResult(*okVal);
     }
@@ -44,7 +44,7 @@ public:
   }
 
   template <class NewKo, std::invocable<Ko const &, BaseResult<Ok, NewKo>> Fn>
-  BaseResult<Ok, NewKo> orElse(Fn const & fn) const noexcept {
+  BaseResult<Ok, NewKo> koAnd(Fn const & fn) const noexcept {
     if (auto const * const koVal = std::get_if<Ko>(*this)) {
       return fn(*koVal);
     }
@@ -67,28 +67,28 @@ public:
     return makeResult(*std::get_if<Ok>(*this));
   }
 
-  Ok expectOk(std::exception const & e = std::bad_variant_access()) const {
+  Ok okOrThrow(std::exception const & e = std::bad_variant_access()) const {
     if (auto const * const okVal = std::get_if<Ok>(*this)) {
       return *okVal;
     }
     throw e;
   }
 
-  Ok expectOk(Ok const & dfltVal) const noexcept {
+  Ok okOr(Ok const & dfltVal) const noexcept {
     if (auto const * const okVal = std::get_if<Ok>(*this)) {
       return *okVal;
     }
     return dfltVal;
   }
 
-  Ko expectKo(std::exception const & e = std::bad_variant_access()) const {
+  Ko koOrThrow(std::exception const & e = std::bad_variant_access()) const {
     if (auto const * const koVal = std::get_if<Ko>(*this)) {
       return *koVal;
     }
     throw e;
   }
 
-  Ko expectKo(Ko const & dfltVal) const noexcept {
+  Ko koOr(Ko const & dfltVal) const noexcept {
     if (auto const * const koVal = std::get_if<Ko>(*this)) {
       return *koVal;
     }
@@ -99,28 +99,26 @@ public:
     if (auto const * const okVal = std::get_if<Ok>(*this)) {
       fn(*okVal);
     }
+    return *this;
   }
 
   template <std::invocable<Ko const &, void> Fn> BaseResult inspectKo(Fn fn) {
     if (auto const * const koVal = std::get_if<Ko>(*this)) {
       fn(*koVal);
     }
+    return *this;
   }
-
-protected:
-private:
 };
 
 template <class Ok, class Ko> class Result : public BaseResult<Ok, Ko> {};
 
 template <class Ok, class Ko>
-class Result<Result<Ok, Ko>, Ko> : public BaseResult<BaseResult<Ok, Ko>, Ko> {
-public:
+struct Result<Result<Ok, Ko>, Ko> : public BaseResult<BaseResult<Ok, Ko>, Ko> {
   Result<Ok, Ko> flatten() {
     if (auto const * const okVal = std::get_if<Result<Ok, Ko>>(*this)) {
       return *okVal;
     }
-    return makeResult(std::get_if<Ko>(*this));
+    return makeResult(*std::get_if<Ko>(*this));
   }
 };
 
