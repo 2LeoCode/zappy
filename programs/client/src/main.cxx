@@ -1,8 +1,3 @@
-#include <world.hxx>
+#include <zappy.hxx>
 
-int main(void) {
-  world::World world;
-
-  world.hello();
-  return 0;
-}
+int main(void) { return 0; }

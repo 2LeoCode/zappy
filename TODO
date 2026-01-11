@@ -20,3 +20,8 @@ COMMON
 - zappy common API ?
 - gfx common API ?
 - classes for game objects
+
+
+MAKEFILE
+
+- update all makefiles using tcp as example, it has a lot of cool features and a cosy syntax
