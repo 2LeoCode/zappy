@@ -1,52 +1,90 @@
 SHELL=bash
+
+NAME=tcp
+
+STATIC_LIB_NAMES=
+SHARED_LIB_NAMES=utils
+
+SRC_ROOT=src
+INC_ROOT=inc
+OBJ_ROOT=.obj
+LIB_ROOT=../../libs
+
+STATIC_TARGET=lib$(NAME).a
+SHARED_TARGET=lib$(NAME).so
+
+STATIC_LIB_DIRS=$(STATIC_LIB_NAMES:%=$(LIB_ROOT)/%)
+SHARED_LIB_DIRS=$(SHARED_LIB_NAMES:%=$(LIB_ROOT)/%)
+
+STATIC_LIB=$(foreach lib,$(STATIC_LIB_NAMES), $(LIB_ROOT)/$(lib)/lib$(lib).a)
+SHARED_LIB=$(foreach lib,$(SHARED_LIB_NAMES), $(LIB_ROOT)/$(lib)/lib$(lib).so)
+
+SRC=$(shell find src -type f -name "*.cxx")
+OBJ=$(SRC:$(SRC_ROOT)/%.cxx=$(OBJ_ROOT)/%.o)
+LIB=$(STATIC_LIB) $(SHARED_LIB)
+DEP=$(OBJ:.o=.d)
+
+OBJ_DIRS=$(sort $(dir $(OBJ)))
+LIB_DIRS=$(STATIC_LIB_DIRS) $(SHARED_LIB_DIRS)
+
 RM=rm -rf
 AR=ar rcs
 MKDIR=mkdir -p
 
-NAME=tcp
-LIB_NAMES=utils
-
-LIBS_ROOT=../../libs
-SRC_DIR=src
-INC_DIR=inc
-OBJ_DIR=.obj
-LIB_DIRS=$(LIB_NAMES:%=$(LIBS_ROOT)/%)
-
-LIB=$(foreach name,$(LIB_NAMES), $(LIBS_ROOT)/$(name)/lib$(name).so)
-SRC=$(shell find src -type f -name "*.cxx")
-OBJ=$(SRC:$(SRC_DIR)/%.cxx=$(OBJ_DIR)/%.o)
-DEP=$(OBJ:.o=.d)
-
-OBJ_DIRS=$(sort $(dir $(OBJ)))
-
 CXX=clang++
-CXXFLAGS=-Wall -Werror -Wextra -Wpedantic -std=c++20 -MMD -fPIC -I$(INC_DIR) $(LIB_DIRS:%=-I%/$(INC_DIR))
-LDFLAGS=$(LIB_DIRS:%=-L%) $(LIB_NAMES:%=-l%) -Wl,-rpath,'$(shell printf '$(lib_dirs:%=$$origin/%:)' | tr -d ' ')'
+CXXFLAGS=-Wall -Werror -Wextra -Wpedantic -std=c++20 -MMD -I$(INC_ROOT) -I$(SRC_ROOT) $(LIB_DIRS:%=-I%/$(INC_ROOT))
+LDFLAGS=$(LIB_DIRS:%=-L%) $(STATIC_LIB_NAMES:%=-l:lib%.a) $(SHARED_LIB_NAMES:%=-l:lib%.so) -Wl,-rpath,'$(shell printf '$(SHARED_LIB_DIRS:%=$$ORIGIN/%:)' | tr -d ' ')'
+
+BUILD_TYPE?=release
+TARGET_TYPE?=static
+
+ifeq ($(BUILD_TYPE),release)
+	CXXFLAGS+=-O2 -DNDEBUG
+else
+	ifeq ($(BUILD_TYPE),debug)
+		CXXFLAGS+=-ggdb -g3
+	endif
+endif
+
+ifeq ($(TARGET_TYPE),static)
+	TARGET=$(STATIC_TARGET)
+else
+	ifeq ($(TARGET_TYPE),shared)
+		TARGET=$(SHARED_TARGET)
+		CXXFLAGS+=-fPIC
+	endif
+endif
 
 
 all: $(NAME)
 
 -include $(DEP)
 
-$(LIB):
-	$(MAKE) -C $(dir $@) INC_DIR=$(INC_DIR)
+$(NAME): $(TARGET)
 
-$(NAME): lib$(NAME).so
+$(STATIC_TARGET): $(OBJ) $(LIB)
+	$(AR) $@ $(OBJ)
 
-lib$(NAME).so: $(OBJ) $(LIB)
+$(SHARED_TARGET): $(OBJ) $(LIB)
 	$(CXX) -fPIC -shared $(OBJ) -o $@ $(LDFLAGS)
 
-$(OBJ): $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cxx | $(OBJ_DIRS)
+$(OBJ): $(OBJ_ROOT)/%.o: $(SRC_ROOT)/%.cxx | $(OBJ_DIRS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 $(OBJ_DIRS):
 	$(MKDIR) $@
 
+$(STATIC_LIB):
+	$(MAKE) -C $(dir $@) BUILD_TYPE=$(BUILD_TYPE) TARGET_TYPE=static
+
+$(SHARED_LIB):
+	$(MAKE) -C $(dir $@) BUILD_TYPE=$(BUILD_TYPE) TARGET_TYPE=shared
+
 clean:
-	$(RM) $(OBJ_DIR)
+	$(RM) $(OBJ_ROOT)
 
 fclean: clean
-	$(RM) lib$(NAME).so
+	$(RM) $(STATIC_TARGET) $(SHARED_TARGET)
 
 re: fclean all
 
