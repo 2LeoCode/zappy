@@ -1,9 +1,12 @@
-#ifndef GFX_H
-#define GFX_H
+#ifndef GFX_HXX
+#define GFX_HXX
 
-struct GfxContext {};
+struct GfxContext {
+  int argc;
+  char const * const * argv;
+};
 
-int gfxInit(void * ctx);
-int gfxUpdate(void * ctx);
+int gfx_init(GfxContext * ctx);
+int gfx_update(GfxContext * ctx);
 
-#endif // !GFX_H
+#endif // !GFX_HXX

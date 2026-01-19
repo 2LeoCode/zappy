@@ -17,7 +17,6 @@ STATIC_LIB=$(foreach lib,$(STATIC_LIB_NAMES), $(LIB_ROOT)/$(lib)/lib$(lib).a)
 SHARED_LIB=$(foreach lib,$(SHARED_LIB_NAMES), $(LIB_ROOT)/$(lib)/lib$(lib).so)
 LIB=$(STATIC_LIB) $(SHARED_LIB)
 
-LIB=$(foreach name,$(LIB_NAMES), $(LIB_ROOT)/$(name)/lib$(name).so)
 SRC=$(shell find $(SRC_ROOT) -type f -name "*.cxx")
 OBJ=$(SRC:$(SRC_ROOT)/%.cxx=$(OBJ_ROOT)/%.o)
 DEP=$(OBJ:.o=.d)

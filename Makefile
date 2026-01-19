@@ -7,7 +7,7 @@ LIBS_DIR=libs
 PROGRAM_NAMES=client gfx server
 PROGRAMS=$(foreach name,$(PROGRAM_NAMES), $(PROGRAMS_DIR)/$(name)/$(name))
 
-LIB_NAMES=zappy utils tcp
+LIB_NAMES=zappy utils tcp gfx raylib
 LIBS=$(foreach name,$(LIB_NAMES), $(LIBS_DIR)/$(name)/lib$(name).so)
 
 BUILD_TYPE?=release

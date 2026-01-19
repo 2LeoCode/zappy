@@ -1,9 +1,15 @@
 SHELL=bash
 
+BUILD_TYPE?=release
+
 NAME=gfx
 
 STATIC_LIB_NAMES=
 SHARED_LIB_NAMES=zappy utils
+
+ifeq ($(BUILD_TYPE),release)
+	STATIC_LIB_NAMES+=gfx
+endif
 
 SRC_ROOT=src
 INC_ROOT=inc
@@ -17,7 +23,6 @@ STATIC_LIB=$(foreach lib,$(STATIC_LIB_NAMES), $(LIB_ROOT)/$(lib)/lib$(lib).a)
 SHARED_LIB=$(foreach lib,$(SHARED_LIB_NAMES), $(LIB_ROOT)/$(lib)/lib$(lib).so)
 LIB=$(STATIC_LIB) $(SHARED_LIB)
 
-LIB=$(foreach name,$(LIB_NAMES), $(LIB_ROOT)/$(name)/lib$(name).so)
 SRC=$(shell find $(SRC_ROOT) -type f -name "*.cxx")
 OBJ=$(SRC:$(SRC_ROOT)/%.cxx=$(OBJ_ROOT)/%.o)
 DEP=$(OBJ:.o=.d)
@@ -31,8 +36,6 @@ MKDIR=mkdir -p
 CXX=clang++
 CXXFLAGS=-Wall -Werror -Wextra -Wpedantic -std=c++20 -MMD -I$(INC_ROOT) -I$(SRC_ROOT) $(LIB_DIRS:%=-I%/$(INC_ROOT))
 LDFLAGS=$(LIB_DIRS:%=-L%) $(STATIC_LIB_NAMES:%=-l:lib%.a) $(SHARED_LIB_NAMES:%=-l:lib%.so) -Wl,-rpath,'$(shell printf '$(SHARED_LIB_DIRS:%=$$ORIGIN/%:)' | tr -d ' ')'
-
-BUILD_TYPE?=release
 
 ifeq ($(BUILD_TYPE),release)
 	CXXFLAGS+=-O2 -DNDEBUG
@@ -48,6 +51,7 @@ all: $(NAME)
 -include $(DEP)
 
 $(NAME): $(OBJ) $(LIB)
+	@echo libs: $(LIB)
 	$(CXX) $(OBJ) -o $@ $(LDFLAGS)
 
 $(OBJ): $(OBJ_ROOT)/%.o: $(SRC_ROOT)/%.cxx | $(OBJ_DIRS)

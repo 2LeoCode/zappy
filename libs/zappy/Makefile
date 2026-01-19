@@ -3,7 +3,7 @@ SHELL=bash
 NAME=zappy
 
 STATIC_LIB_NAMES=
-SHARED_LIB_NAMES=zappy
+SHARED_LIB_NAMES=utils
 
 SRC_ROOT=src
 INC_ROOT=inc
@@ -18,10 +18,10 @@ SHARED_LIB_DIRS=$(SHARED_LIB_NAMES:%=$(LIB_ROOT)/%)
 
 STATIC_LIB=$(foreach lib,$(STATIC_LIB_NAMES), $(LIB_ROOT)/$(lib)/lib$(lib).a)
 SHARED_LIB=$(foreach lib,$(SHARED_LIB_NAMES), $(LIB_ROOT)/$(lib)/lib$(lib).so)
+LIB=$(STATIC_LIB) $(SHARED_LIB)
 
 SRC=$(shell find src -type f -name "*.cxx")
 OBJ=$(SRC:$(SRC_ROOT)/%.cxx=$(OBJ_ROOT)/%.o)
-LIB=$(STATIC_LIB) $(SHARED_LIB)
 DEP=$(OBJ:.o=.d)
 
 OBJ_DIRS=$(sort $(dir $(OBJ)))
